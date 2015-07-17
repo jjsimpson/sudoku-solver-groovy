@@ -11,6 +11,8 @@ class SudokuSlotCollection {
     private Set<SudokuSlot> squares = new HashSet<SudokuSlot>()
     //Indicates if all slots in the collection have a value other than 0
     private boolean isComplete = false
+    //Tracks how many times a possible value occurs within the collection in order to narrow down values that only occur once
+    private Map<Integer,Integer> possibleValueOccurrences = new HashMap<Integer,Integer>()
 
     /**
      * Returns the Set of SudokuSlots
@@ -28,23 +30,42 @@ class SudokuSlotCollection {
         squares.add(slot)
     }
 
+    public getPossibleValueOccurrences() {
+        return possibleValueOccurrences
+    }
+
     /**
      * Calculates if each slot in the collection has a value or not and returns result
      * @return true if all slots in the collection have a value other than 0, otherwise returns false
      */
     public boolean isComplete() {
-        if(isComplete) {
-            //do not recalculate isComplete if the collection was already determined to be complete
-            return isComplete
-        } else {
+        if(!isComplete) {
             boolean hasValue = true
             //loop through all slots in the collection, if one is found without a value, set isComplete to false.
-            squares.each{ slot ->
+            def slotsIterator = squares.iterator()
+            while(slotsIterator.hasNext()) {
+                def slot = slotsIterator.next()
                 if(!slot.hasValue()) {
                     hasValue = false
+                    break
                 }
             }
             isComplete = hasValue
+        }
+        return isComplete
+    }
+
+    public void calculatePossibleValueOccurrences() {
+        squares.each { slot ->
+            slot.possibleValues.each { value ->
+                def valueCount = possibleValueOccurrences.get(value)
+                if(valueCount) {
+                    valueCount++
+                    possibleValueOccurrences.put(value, valueCount)
+                }  else {
+                    possibleValueOccurrences.put(value, 1)
+                }
+            }
         }
     }
 }

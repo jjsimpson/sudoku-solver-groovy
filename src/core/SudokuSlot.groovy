@@ -20,13 +20,26 @@ class SudokuSlot {
     }
 
     /**
+     * initializes a slot with a value, setting the possible values to an empty list
+     * @param value
+     */
+    public SudokuSlot(int value) {
+        number = value
+        if(value != 0) {
+            possibleValues = new HashSet<Integer>()
+        } else {
+            possibleValues = new HashSet(1..SudokuBoard.boardSize)
+        }
+    }
+
+    /**
      * sets a value in the slot, removing all possible values from the possibleValues list
      * @param value the value to assign to the slot
      */
     public void setValue(int value) {
         number = value
         if(value != 0) {
-            possibleValues = new ArrayList<Integer>()
+            possibleValues = new HashSet<Integer>()
         }
     }
 

@@ -19,19 +19,39 @@ class SudokuBoard {
     //the full length of the board (standard sudoku is 9)
     private static int boardSize
 
+    private static int boardBlockWidth
+
+    private static int boardBlockHeight
+
+    private boolean progressMade = true
+
     /**
      * Initializes the collection arrays and calls the initialize method to create the empty slots across the board
      * @param blockRowCount the number of rows per block on the board (standard sudoku is 3)
      * @param blockColumnCount the number of columns per block on the board (standard sudoku is 3)
+     * @param values starting values for the sudoku puzzle
      */
-    public SudokuBoard(int blockRowCount, int blockColumnCount) {
+    public SudokuBoard(int blockRowCount, int blockColumnCount, int[][] values) {
         boardSize = blockRowCount*blockColumnCount
+        boardBlockWidth = blockColumnCount
+        boardBlockHeight = blockRowCount
         boardSlots = new SudokuSlot[boardSize][boardSize]
         boardBlocks = new SudokuSlotCollection[blockRowCount][blockColumnCount]
         boardColumns = new SudokuSlotCollection[boardSize]
         boardRows = new SudokuSlotCollection[boardSize]
 
-        initializeSlots(blockRowCount, blockColumnCount)
+        initializeSlots(blockRowCount,blockColumnCount,values)
+    }
+
+    public void solve() {
+        calculatePossibleValuesByBlocks()
+        calculatePossibleValuesByRowsAndColumns()
+        calculatePossibleValueOccurrences()
+        def counter = 0
+        while (!isComplete() && counter < 20) {
+            assignCorrectValues()
+            counter++
+        }
     }
 
     /**
@@ -47,14 +67,15 @@ class SudokuBoard {
      * contains logic to ensure that the row, column, block, and board collections all reference the same slots instead of duplicating slots between collections
      * @param blockRowCount the number of rows per block on the board (standard sudoku is 3)
      * @param blockColumnCount the number of columns per block on the board (standard sudoku is 3)
+     * @param values starting values for the sudoku puzzle
      */
-    private void initializeSlots(int blockRowCount, int blockColumnCount) {
+    private void initializeSlots(int blockRowCount, int blockColumnCount, int[][] values) {
         //start at the top left of the board and begin iterating through each row
         boardSlots.eachWithIndex{row, rowIndex ->
             //for each row, iterate through each slot, starting at the far left
             row.eachWithIndex{columnSlot, columnIndex ->
                 //create a new slot, by default possible values are initialized to 1-9
-                SudokuSlot newSlot = new SudokuSlot()
+                SudokuSlot newSlot = new SudokuSlot(values[rowIndex][columnIndex])
                 //assign the new slot to the board
                 boardSlots[rowIndex][columnIndex] = newSlot
 
@@ -191,6 +212,46 @@ class SudokuBoard {
      * iterates over all slots on the board and if only 1 value is possible for that slot, that value is assigned to that slot
      */
     public void assignCorrectValues() {
+        boardRows.eachWithIndex {row, rowIndex ->
+            if(!row.isComplete()) {
+                def possibleValueOccurrences = row.possibleValueOccurrences
+                row.slots.eachWithIndex { slot, columnIndex ->
+                    if (!slot.hasValue()) {
+                        def possibleValues = slot.possibleValues.clone()
+                        possibleValues.each { possibleValue ->
+                            def valueOccurrence = possibleValueOccurrences.get(possibleValue)
+                            if(valueOccurrence == 1) {
+                                assignValue(rowIndex,columnIndex,possibleValue)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        boardColumns.eachWithIndex {column, columnIndex ->
+            if(!column.isComplete()) {
+                def possibleValueOccurrences = column.possibleValueOccurrences
+                column.slots.eachWithIndex { slot, rowIndex ->
+                    if (!slot.hasValue()) {
+                        def possibleValues = slot.possibleValues
+                        possibleValues.each { possibleValue ->
+                            def valueOccurrence = possibleValueOccurrences.get(possibleValue)
+                            if(valueOccurrence == 1) {
+                                assignValue(rowIndex,columnIndex,possibleValue)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+//        boardBlocks.eachWithIndex { blockRow, blockRowIndex ->
+//            blockRow.eachWithIndex {block, blockColumnIndex ->
+//                if(!block.isComplete()) {
+//                    def possibleValueOccurrences = block.possibleValueOccurrences
+//                    block.slots.eachWithIndex{ slot, int i -> }
+//                }
+//            }
+//        }
         //iterate over all rows on the board
         boardSlots.eachWithIndex { row, rowIndex ->
             //iterate over all slots within the row
@@ -201,21 +262,68 @@ class SudokuBoard {
                     if(slot.possibleValues.size() == 1){
                         //assign the value to the slot
                         def value = slot.getPossibleValues().iterator().next()
-                        slot.setValue(value)
+                        assignValue(rowIndex,columnIndex,value)
                     }
                 }
+            }
+        }
+
+    }
+
+    /**
+     * Assigns the specified value to the specified row and column on the sudoku board
+     * @param rowIndex the row to assign the value to
+     * @param column the column to assign the value to
+     * @param value the value to be assigned
+     */
+    public void assignValue(int rowIndex, int column, int value) {
+        progressMade = true
+        boardSlots[rowIndex][column].setValue(value)
+        removeFromPossibleValues(rowIndex, column, value)
+        calculatePossibleValueOccurrences()
+    }
+
+    public void calculatePossibleValueOccurrences() {
+        boardBlocks.each{blockRow ->
+            blockRow.each{block ->
+                if(!block.isComplete()) {
+                    block.calculatePossibleValueOccurrences()
+                }
+            }
+        }
+        boardRows.each { row ->
+            if(!row.isComplete()) {
+                row.calculatePossibleValueOccurrences()
+            }
+        }
+        boardColumns.each { column ->
+            if(!column.isComplete()) {
+                column.calculatePossibleValueOccurrences()
             }
         }
     }
 
     /**
-     * Assigns the specified value to the specified row and column on the sudoku board
-     * @param row the row to assign the value to
-     * @param column the column to assign the value to
-     * @param value the value to be assigned
+     * Removes a value from the possible values list of all slots in the same row, column, and block as the provided indeces
+     * @param rowIndex index of the row to modify
+     * @param columnIndex index of the column to modify
+     * @param value the value to remove from the possible values lists
      */
-    public void assignValue(int row, int column, int value) {
-        boardSlots[row][column].setValue(value)
+    private void removeFromPossibleValues(int rowIndex, int columnIndex, int value) {
+        def row = boardRows[rowIndex]
+        row.slots.each { slot ->
+            slot.removePossibleValue(value)
+        }
+        def column = boardColumns[columnIndex]
+        column.slots.each { slot ->
+            slot.removePossibleValue(value)
+        }
+        int blockRow = rowIndex/boardBlockHeight
+        int blockColumn = columnIndex/boardBlockWidth
+        def block = boardBlocks[blockRow][blockColumn]
+        block.slots.each { slot ->
+            slot.removePossibleValue(value)
+        }
     }
 
     /**
