@@ -14,7 +14,9 @@ def puzzleFile
 
 //puzzleFile = new File('test_puzzle4(hard)')
 
-puzzleFile = new File('test_puzzle5(medium)')
+//puzzleFile = new File('test_puzzle5(medium)')
+
+puzzleFile = new File('test_puzzle6(medium)')
 
 
 int rowIndex = 0
@@ -32,4 +34,6 @@ SudokuBoard board = new SudokuBoard(3,3,initialValues)
 board.printBoard()
 board.solve()
 board.printBoard()
+board.printPossibleValues()
+board.printPossibleValueOccurrences()
 
