@@ -61,6 +61,7 @@ public class SudokuBlock {
      * @param previousPossibleValues values that were possible for the slot before a value was assigned to it
      */
     public void recalculatePossibleValues(int assignedValue, Set<Integer> previousPossibleValues) {
+//        calculatePossibleValueOccurrences()
         //iterate over all rows in the block
         squares.each {slotRow ->
             //iterate over all slots in the row
