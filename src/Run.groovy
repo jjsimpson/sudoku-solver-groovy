@@ -9,16 +9,12 @@ import groovy.time.TimeDuration
 def puzzleFile
 
 //puzzleFile = new File('test_puzzle1(easy)')
-
 //puzzleFile = new File('test_puzzle2(medium)')
-
 //puzzleFile = new File('test_puzzle3(easy)')
-
 //puzzleFile = new File('test_puzzle4(hard)')
-
 //puzzleFile = new File('test_puzzle5(medium)')
-
-puzzleFile = new File('test_puzzle6(medium)')
+//puzzleFile = new File('test_puzzle6(medium)')
+puzzleFile = new File('test_puzzle7(medium)')
 
 
 int rowIndex = 0

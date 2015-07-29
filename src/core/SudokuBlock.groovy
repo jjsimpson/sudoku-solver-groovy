@@ -10,7 +10,7 @@ public class SudokuBlock {
     //Indicates if all slots in the collection have a value other than 0
     private boolean isComplete = false
     //Tracks how many times a possible value occurs within the collection in order to narrow down values that only occur once
-    private Map<Integer,Integer> possibleValueOccurrences = new HashMap<Integer,Integer>()
+    private Map<Integer,Integer> possibleValueOccurrences
 
     /**
      * Creates a new block of the sudoku puzzle
@@ -61,7 +61,6 @@ public class SudokuBlock {
      * @param previousPossibleValues values that were possible for the slot before a value was assigned to it
      */
     public void recalculatePossibleValues(int assignedValue, Set<Integer> previousPossibleValues) {
-//        calculatePossibleValueOccurrences()
         //iterate over all rows in the block
         squares.each {slotRow ->
             //iterate over all slots in the row
@@ -70,6 +69,7 @@ public class SudokuBlock {
                 slot.removePossibleValue(assignedValue)
             }
         }
+//        calculatePossibleValueOccurrences()
         // Now that the value has been assigned to a slot, remove the count of how many slots that value can belong to
         possibleValueOccurrences.remove(assignedValue)
         //iterate over all values that could've belonged to the slot that has now been assigned a value
@@ -83,6 +83,7 @@ public class SudokuBlock {
      * Calculates the initial count of how many times each number value exists as a possible value in the block
      */
     public void calculatePossibleValueOccurrences() {
+        possibleValueOccurrences  = new HashMap<Integer,Integer>()
         //iterate over all rows in the block
         squares.each {row ->
             //iterate over all slots in the row

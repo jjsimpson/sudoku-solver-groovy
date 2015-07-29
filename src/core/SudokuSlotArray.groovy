@@ -56,12 +56,12 @@ class SudokuSlotArray {
      * @param previousPossibleValues the list of possible values that could've belonged to the slot before it was assigned a value
      */
     public void recalculatePossibleValues(int assignedValue, Set<Integer> previousPossibleValues) {
-//        calculatePossibleValueOccurrences()
         //iterate over all slots in the collection
         squares.each {slot ->
             //remove the value that was assigned to a slot from the possible values list of all slots in the collection
             slot.removePossibleValue(assignedValue)
         }
+//        calculatePossibleValueOccurrences()
         //since the value has now been assigned to a slot, remove that value from the map of how many times it occurs in the collection
         possibleValueOccurrences.remove(assignedValue)
         previousPossibleValues.each { possibleValue ->
@@ -74,6 +74,7 @@ class SudokuSlotArray {
      * initial calculation of how many times each possible value occurs within the collection
      */
     public void calculatePossibleValueOccurrences() {
+        possibleValueOccurrences = new HashMap<Integer,Integer>()
         //iterate over all slots in the collection
         squares.each { slot ->
             //iterate over all possible values for the slot

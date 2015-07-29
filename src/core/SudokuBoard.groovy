@@ -80,7 +80,7 @@ class SudokuBoard {
             //for each row, iterate through each value, starting at the far left
             row.eachWithIndex{value, columnIndex ->
                 //create a new slot with its starting value (0 if the slot doesn't have a value)
-                SudokuSlot newSlot = new SudokuSlot(value,rowIndex, columnIndex)
+                SudokuSlot newSlot = new SudokuSlot(value,rowIndex, columnIndex, boardSize)
 
                 //calculate the row index of the block in the block collection that this value belongs to
                 int blockRow = rowIndex/blockRowCount
@@ -174,7 +174,7 @@ class SudokuBoard {
      * @param modifiedSlotsMap
      */
     private void recalculatePossibleValues(Map<SudokuSlot,Set<Integer>> modifiedSlotsMap) {
-        //iterate over all slots that were modified in the last round of assigning vlues
+        //iterate over all slots that were modified in the last round of assigning values
         modifiedSlotsMap.keySet().each{ slot ->
             //get the list of possible values that could've been assigned to that slot before its value was determined
             def possibleValues = modifiedSlotsMap.get(slot)
@@ -200,6 +200,9 @@ class SudokuBoard {
             if(!row.isComplete()) {
                 def modifiedSlots = row.assignCorrectValues()
                 recalculatePossibleValues(modifiedSlots)
+                printBoard()
+                printPossibleValues()
+                printPossibleValueOccurrences()
             }
         }
 
@@ -207,6 +210,9 @@ class SudokuBoard {
             if(!column.isComplete()) {
                 def modifiedSlots = column.assignCorrectValues()
                 recalculatePossibleValues(modifiedSlots)
+                printBoard()
+                printPossibleValues()
+                printPossibleValueOccurrences()
             }
         }
 
@@ -215,6 +221,9 @@ class SudokuBoard {
                 if(!block.isComplete()) {
                     def modifiedSlots = block.assignCorrectValues()
                     recalculatePossibleValues(modifiedSlots)
+                    printBoard()
+                    printPossibleValues()
+                    printPossibleValueOccurrences()
                 }
             }
         }

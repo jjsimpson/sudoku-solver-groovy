@@ -20,9 +20,9 @@ class SudokuSlot {
      * @param rowIndex the index of the row this slot belongs to
      * @param columnIndex the index of the column this slot belongs to
      */
-    public SudokuSlot(int rowIndex, int columnIndex) {
+    public SudokuSlot(int rowIndex, int columnIndex, int boardSize) {
         number = 0
-        possibleValues = new HashSet(1..SudokuBoard.boardSize)
+        possibleValues = new HashSet(1..boardSize)
         this.rowIndex = rowIndex
         this.columnIndex = columnIndex
     }
@@ -33,7 +33,7 @@ class SudokuSlot {
      * @param rowIndex the index of the row this slot belongs to
      * @param columnIndex the index of the column this slot belongs to
      */
-    public SudokuSlot(int value, int rowIndex, int columnIndex) {
+    public SudokuSlot(int value, int rowIndex, int columnIndex, int boardSize) {
         number = value
         this.rowIndex = rowIndex
         this.columnIndex = columnIndex
