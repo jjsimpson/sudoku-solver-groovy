@@ -20,7 +20,7 @@ class SudokuSlotArray {
 
     /**
      * Returns the Set of SudokuSlots
-     * @return Set<SudokuSlot> of all slots belonging to this collection
+     * @return SudokuSlot[] of all slots belonging to this collection
      */
     public SudokuSlot[] getSlots() {
         return squares
@@ -48,6 +48,8 @@ class SudokuSlotArray {
                 slot2.removePossibleValue(slot.value)
             }
         }
+
+
     }
 
     /**
@@ -146,7 +148,7 @@ class SudokuSlotArray {
             //loop through all slots in the collection, if one is found without a value, set isComplete to false.
             for(int i = 0; i < squares.length; i++) {
                 def slot = squares[i]
-                if(!slot.hasValue()) {
+                if(slot == null || !slot.hasValue()) {
                     hasValue = false
                     break
                 }

@@ -42,7 +42,7 @@ class SudokuSlot {
             possibleValues = new HashSet<Integer>()
         } else {
             //if the slot has a value of zero this indicates the slot is empty and can possibly be any value
-            possibleValues = new HashSet(1..SudokuBoard.boardSize)
+            possibleValues = new HashSet(1..boardSize)
         }
     }
 
