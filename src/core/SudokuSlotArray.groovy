@@ -177,4 +177,8 @@ class SudokuSlotArray {
             }
         }
     }
+
+    public SudokuSlot[] getSquares() {
+        return squares
+    }
 }

@@ -3,6 +3,7 @@ package core;
 /**
  * Represents a 1-section block of a sudoku puzzle (a standard sudoku block has 9 values)
  */
+//TODO create interface for collection (block, row, column)
 public class SudokuBlock {
 
     //The set of sudoku slots that belong in the block, sorted by rows and columns
@@ -197,5 +198,9 @@ public class SudokuBlock {
                 possibleValueOccurrences.put(value, (occurrenceCount - 1))
             }
         }
+    }
+
+    public SudokuSlot[][] getSquares() {
+        return squares
     }
 }

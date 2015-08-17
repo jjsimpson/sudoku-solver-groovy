@@ -200,9 +200,9 @@ class SudokuBoard {
             if(!row.isComplete()) {
                 def modifiedSlots = row.assignCorrectValues()
                 recalculatePossibleValues(modifiedSlots)
-                printBoard()
-                printPossibleValues()
-                printPossibleValueOccurrences()
+//                printBoard()
+//                printPossibleValues()
+//                printPossibleValueOccurrences()
             }
         }
 
@@ -210,9 +210,9 @@ class SudokuBoard {
             if(!column.isComplete()) {
                 def modifiedSlots = column.assignCorrectValues()
                 recalculatePossibleValues(modifiedSlots)
-                printBoard()
-                printPossibleValues()
-                printPossibleValueOccurrences()
+//                printBoard()
+//                printPossibleValues()
+//                printPossibleValueOccurrences()
             }
         }
 
@@ -221,9 +221,9 @@ class SudokuBoard {
                 if(!block.isComplete()) {
                     def modifiedSlots = block.assignCorrectValues()
                     recalculatePossibleValues(modifiedSlots)
-                    printBoard()
-                    printPossibleValues()
-                    printPossibleValueOccurrences()
+//                    printBoard()
+//                    printPossibleValues()
+//                    printPossibleValueOccurrences()
                 }
             }
         }
@@ -307,6 +307,18 @@ class SudokuBoard {
                 println "Block Row: ${blockRowIndex+1} Block Column: ${blockColumnIndex+1} Possible Value Occurrences: ${block.possibleValueOccurrences}"
             }
         }
+    }
+
+    public SudokuBlock[][] getBoardBlocks() {
+        return boardBlocks
+    }
+
+    public SudokuSlotArray[] getBoardColumns() {
+        return boardColumns
+    }
+
+    public SudokuSlotArray[] getBoardRows() {
+        return boardRows
     }
 
 }
