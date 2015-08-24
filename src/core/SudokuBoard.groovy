@@ -175,7 +175,7 @@ class SudokuBoard {
      */
     private void recalculatePossibleValues(Map<SudokuSlot,Set<Integer>> modifiedSlotsMap) {
         //iterate over all slots that were modified in the last round of assigning values
-        modifiedSlotsMap.keySet().each{ slot ->
+        modifiedSlotsMap.keySet().each { slot ->
             //get the list of possible values that could've been assigned to that slot before its value was determined
             def possibleValues = modifiedSlotsMap.get(slot)
             def rowIndex = slot.rowIndex
@@ -216,8 +216,8 @@ class SudokuBoard {
             }
         }
 
-        boardBlocks.each {blockRow ->
-            blockRow.each {block ->
+        boardBlocks.each { blockRow ->
+            blockRow.each { block ->
                 if(!block.isComplete()) {
                     def modifiedSlots = block.assignCorrectValues()
                     recalculatePossibleValues(modifiedSlots)

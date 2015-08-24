@@ -110,7 +110,7 @@ class SudokuSlotArray {
     public Map<SudokuSlot,Set<Integer>> assignCorrectValues() {
         Map<SudokuSlot,Set<Integer>> modifiedSlots = new HashMap<SudokuSlot,Set<Integer>>()
         //iterate over all slots in the collection
-        squares.each{slot ->
+        squares.each { slot ->
             //if the slot only has one possible value
             if(slot.possibleValues.size() == 1) {
                 //add that slot to the list of slots we assigned a value to
@@ -124,7 +124,7 @@ class SudokuSlotArray {
             //if a possible value exists only 1 time throughout the entire collection
             if(possibleValueOccurrences.get(key) == 1) {
                 //iterate over all slots in the collection
-                squares.each{slot ->
+                squares.each { slot ->
                     //find the only slot that the value could belong to
                     if(slot.possibleValues.contains(key.intValue())) {
                         //add this slot to the list of slots we assigned a value to

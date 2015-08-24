@@ -1,8 +1,5 @@
 package core
 
-/**
- * Created by Jerran on 7/28/2015.
- */
 class SudokuBoardTest extends GroovyTestCase {
 
     SudokuBoard testBoard1
@@ -211,6 +208,13 @@ class SudokuBoardTest extends GroovyTestCase {
 
     //TODO
     void testAssignCorrectValues() {
+        testBoard1.calculatePossibleValuesByBlocks()
+        testBoard1.calculatePossibleValuesByRowsAndColumns()
+        testBoard1.calculatePossibleValueOccurrences()
+    }
+
+    //TODO
+    void testRecalculatePossibleValues() {
 
     }
 
