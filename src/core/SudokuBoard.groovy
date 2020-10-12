@@ -52,8 +52,8 @@ class SudokuBoard {
         //calculate how many times each possible value occurs within each row, column, and block in the puzzle
         calculatePossibleValueOccurrences()
         def counter = 0
-        //while the puzzle is not complete, attempt to solve the puzzle (for now we quit after 20 rounds to prevent infinite loops for puzzles too difficult for the logic to solve)
-        while (!isComplete() && counter < 20) {
+        //while the puzzle is not complete, attempt to solve the puzzle (for now we quit after 50 rounds to prevent infinite loops for puzzles too difficult for the logic to solve)
+        while (!isComplete() && counter < 50) {
             assignCorrectValues()
             counter++
         }
@@ -174,7 +174,7 @@ class SudokuBoard {
      * @param modifiedSlotsMap
      */
     private void recalculatePossibleValues(Map<SudokuSlot,Set<Integer>> modifiedSlotsMap) {
-        //iterate over all slots that were modified in the last round of assigning vlues
+        //iterate over all slots that were modified in the last round of assigning values
         modifiedSlotsMap.keySet().each{ slot ->
             //get the list of possible values that could've been assigned to that slot before its value was determined
             def possibleValues = modifiedSlotsMap.get(slot)
@@ -198,23 +198,29 @@ class SudokuBoard {
     public void assignCorrectValues() {
         boardRows.each {row ->
             if(!row.isComplete()) {
+                row.calculatePossibleValueOccurrences()
                 def modifiedSlots = row.assignCorrectValues()
                 recalculatePossibleValues(modifiedSlots)
+                row.accountForMatchingSlots()
             }
         }
 
         boardColumns.each {column ->
             if(!column.isComplete()) {
+                column.calculatePossibleValueOccurrences()
                 def modifiedSlots = column.assignCorrectValues()
                 recalculatePossibleValues(modifiedSlots)
+                column.accountForMatchingSlots()
             }
         }
 
         boardBlocks.each {blockRow ->
             blockRow.each {block ->
                 if(!block.isComplete()) {
+                    block.calculatePossibleValueOccurrences()
                     def modifiedSlots = block.assignCorrectValues()
                     recalculatePossibleValues(modifiedSlots)
+                    block.accountForMatchingSlots()
                 }
             }
         }

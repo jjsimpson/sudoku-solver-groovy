@@ -62,9 +62,9 @@ public class SudokuBlock {
      */
     public void recalculatePossibleValues(int assignedValue, Set<Integer> previousPossibleValues) {
         //iterate over all rows in the block
-        squares.each {slotRow ->
+        squares.each { slotRow ->
             //iterate over all slots in the row
-            slotRow.each {slot ->
+            slotRow.each { slot ->
                 //removes the newly assigned value from the possible values list for all slots in the block
                 slot.removePossibleValue(assignedValue)
             }
@@ -79,9 +79,52 @@ public class SudokuBlock {
     }
 
     /**
+     * Checks for slots that have the exact same possible values and if it makes sense to do so, remove those values as possible values from other slots
+     * ex. if two slots have the possible values 1,2 remove 1 and 2 as possible values from every slot in the collection as those two slots because 1 and 2 have to belong to those two slots
+     */
+    public void accountForMatchingSlots() {
+        //iterate over all rows in the block
+        squares.each { slotRow ->
+            //iterate over all slots in the row
+            slotRow.each { slot ->
+                //create a collection to track the slots which have the exact same possible values as another slot
+                ArrayList<SudokuSlot> matchingPossibleValues = new ArrayList<SudokuSlot>()
+                squares.each { slotRow2 ->
+                    //iterate over all slots in the row
+                    slotRow2.each { slot2 ->
+                        //if the current slot has the same possible values as slot2, keep track of slot2 for later
+                        if(slot.possibleValues.size() > 0 && slot.possibleValues == slot2.possibleValues) {
+                            matchingPossibleValues.add(slot2)
+                        }
+                    }
+                }
+
+                //If the number of possible values is exactly the same as the number of slots...
+                //it means these values have to go in these slots. Remove these values from the possible values of all other slots
+                if(matchingPossibleValues.size() > 0 && matchingPossibleValues.get(0).possibleValues.size() == matchingPossibleValues.size()) {
+                    squares.each { slotRow2 ->
+                        slotRow2.each { slot2 ->
+                            // if slot doesn't have the exact same possible values as slot2, it means it is a slot we need to remove values from
+                            if(slot.possibleValues != slot2.possibleValues) {
+                                slot.possibleValues.each { value ->
+                                    //remove all of the current slot's values from slot2's possible values list
+                                    slot2.removePossibleValue(value)
+                                    //decrement the possible value count for every possible value we remove
+                                    decrementPossibleValueCount(value)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * Calculates the initial count of how many times each number value exists as a possible value in the block
      */
     public void calculatePossibleValueOccurrences() {
+        possibleValueOccurrences = new HashMap<Integer,Integer>()
         //iterate over all rows in the block
         squares.each {row ->
             //iterate over all slots in the row
