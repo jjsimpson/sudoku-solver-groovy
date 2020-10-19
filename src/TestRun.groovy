@@ -12,11 +12,11 @@ def puzzleFile
 
 //puzzleFile = new File('test_puzzle3(easy)')
 
-//puzzleFile = new File('test_puzzle4(hard)')
+puzzleFile = new File('test_puzzle4(hard)')
 
 //puzzleFile = new File('test_puzzle5(medium)')
 
-puzzleFile = new File('test_puzzle6(medium)')
+//puzzleFile = new File('test_puzzle6(medium)')
 
 
 int rowIndex = 0

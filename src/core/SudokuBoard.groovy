@@ -258,15 +258,29 @@ class SudokuBoard {
     public void printBoard() {
         //print a new line character just in case a board was printed above this one in the console
         print '\n'
+        def rowCount = 0
+        def columnCount = 0
         //iterate over all rows on the board
+        print '-------------------------------------------------\n'
         boardRows.each{ row ->
             //iterate over each slot in the row
+            print '|\t'
             row.slots.each{ slot ->
                 //print the slot's value, followed by a tab character to separate it from the next column
                 print "${slot.getValue()}\t"
+
+                columnCount++
+                if(columnCount % 3 == 0) {
+                    print '|\t'
+                }
             }
             //print a new line character to end the row
             print '\n'
+
+            rowCount++
+            if(rowCount % 3 == 0) {
+                print '-------------------------------------------------\n'
+            }
         }
     }
 
